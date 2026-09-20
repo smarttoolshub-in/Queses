@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    
-    <meta name="google-site-verification" content="xEymZ9ThRS4rpYEuodRwBhJD_bkIungjJ3YdxQGOmm0" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="xEyMZ9ThS4rpYEuodRwBhJD_bKiungjJ3YdxQG0mm0" />
     <title>Ultimate Math Hub - Nested Menu Quiz</title>
     <style>
         * {
@@ -17,7 +16,54 @@
             background: #f4f7f6;
             color: #333;
             display: flex;
+            flex-direction: column;
             height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Top Header Bar Styling */
+        header {
+            background: #1e3c72;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            height: 55px;
+            flex-shrink: 0;
+        }
+        header h2 {
+            font-size: 18px;
+            margin: 0;
+        }
+        .header-links {
+            display: flex;
+            gap: 10px;
+        }
+        .header-btn {
+            color: white;
+            padding: 6px 14px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .calc-btn { background: #2563eb; }
+        .calc-btn:hover { background: #1d4ed8; }
+        .tool-btn { background: #059669; }
+        .tool-btn:hover { background: #047857; }
+
+        /* App Container for Sidebar and Main Content */
+        .app-container {
+            display: flex;
+            flex-grow: 1;
+            height: calc(100vh - 55px);
+            overflow: hidden;
         }
 
         /* Sidebar Styling */
@@ -28,6 +74,7 @@
             padding: 20px;
             overflow-y: auto;
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            flex-shrink: 0;
         }
         .sidebar h2 {
             font-size: 20px;
@@ -180,7 +227,8 @@
 
         /* Responsive for Mobile */
         @media (max-width: 768px) {
-            body { flex-direction: column; }
+            body { height: auto; overflow: auto; }
+            .app-container { flex-direction: column; height: auto; overflow: visible; }
             .sidebar {
                 width: 100%;
                 height: auto;
@@ -198,85 +246,72 @@
             }
             .sub-menu { display: flex; padding-left: 0; }
             .sub-menu .class-btn { display: inline-block; width: auto; margin-right: 10px; }
-            .main-content { padding: 15px; }
+            .main-content { padding: 15px; overflow: visible; }
         }
     </style>
 </head>
 <body>
-            body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f4f7f6;
-            color: #333;
-            display: flex;
-            flex-direction: column; /* यह हेडर को सबसे ऊपर रखेगा */
-            height: 100vh;
-            overflow: hidden;
-        }
 
-        /* नया कंटेनर जो साइडबार और क्विज़ को एक साथ सेट रखेगा */
-        .app-container {
-            display: flex;
-            flex-grow: 1;
-            height: calc(100vh - 50px);
-        }
-        <!-- Top Header Bar -->
-    <header style="background: #1e3c72; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
-        <h2 style="font-size: 18px; margin: 0;">📚 Ultimate Math Hub</h2>
-        <div style="display: flex; gap: 10px;">
-            <!-- कैलकुलेटर वेबसाइट का लिंक -->
-            <a href="https://smarttoolshub-in.github.io/SMART-TOOL/" target="_blank" style="background: #2563eb; color: white; padding: 6px 14px; text-decoration: none; border-radius: 8px; font-size: 13px; font-weight: bold; transition: 0.3s;">
+    <!-- Top Header Bar -->
+    <header>
+        <h2>📚 Ultimate Math Hub</h2>
+        <div class="header-links">
+            <a href="https://smarttoolshub-in.github.io/SMART-TOOL/" target="_blank" class="header-btn calc-btn">
                 ⚡ All Calculators ➔
             </a>
-            <!-- DocPhotoHub या अन्य टूल का लिंक (यदि चाहें) -->
-            <a href="https://smarttoolshub-in.github.io/doctool/" target="_blank" style="background: #059669; color: white; padding: 6px 14px; text-decoration: none; border-radius: 8px; font-size: 13px; font-weight: bold;">
+            <a href="https://smarttoolshub-in.github.io/doctool/" target="_blank" class="header-btn tool-btn">
                 🛠️ DocTools ➔
             </a>
         </div>
     </header>
 
-    <!-- Left Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <h2>📚 Math Hub</h2>
-        <!-- School Classes will be inserted here -->
-        
-        <!-- Competitive Exams Dropdown Container -->
-        <button class="class-btn dropdown-btn" onclick="toggleCompMenu()">🎯 Competitive Exams ▾</button>
-        <div class="sub-menu" id="comp-submenu">
-            <!-- 19 Chapters will be inserted here -->
-        </div>
-    </div>
-
-    <!-- Main Quiz Content -->
-    <div class="main-content">
-        <div class="container" id="quiz-container-main" style="display: none;">
+    <!-- App Container -->
+    <div class="app-container">
+        <!-- Left Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <h2>📚 Math Hub</h2>
+            <!-- School Classes will be inserted here -->
             
-            <div class="top-bar">
-                <span id="progress-text">सवाल: 1 / 5</span>
-                <span class="timer" id="timer">⏱️ 15s</span>
+            <!-- Competitive Exams Dropdown Container -->
+            <button class="class-btn dropdown-btn" onclick="toggleCompMenu()">🎯 Competitive Exams ▾</button>
+            <div class="sub-menu" id="comp-submenu">
+                <!-- 19 Chapters will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Main Quiz Content -->
+        <div class="main-content">
+            <div class="container" id="quiz-container-main" style="display: none;">
+                
+                <div class="top-bar">
+                    <span id="progress-text">सवाल: 1 / 5</span>
+                    <span class="timer" id="timer">⏱️ 15s</span>
+                </div>
+
+                <div id="level-badge" class="level-badge">Category Name</div>
+                <div id="question" class="question">सवाल यहाँ लोड हो रहा है...</div>
+                
+                <div class="options" id="options-box"></div>
+                <div id="explanation-box"></div>
+                
+                <button class="next-btn" id="next-btn" onclick="nextQuestion()">अगला सवाल ➡️</button>
             </div>
 
-            <div id="level-badge" class="level-badge">Category Name</div>
-            <div id="question" class="question">सवाल यहाँ लोड हो रहा है...</div>
-            
-            <div class="options" id="options-box"></div>
-            <div id="explanation-box"></div>
-            
-            <button class="next-btn" id="next-btn" onclick="nextQuestion()">अगला सवाल ➡️</button>
-        </div>
+            <!-- Initial Placeholder Message -->
+            <div class="container" id="welcome-msg">
+                <h2 style="color: #1e3c72; text-align: center;">👋 Welcome to Math Hub!</h2>
+                <p class="placeholder-text">कृपया बायीं तरफ से कोई भी <b>Class</b> या <b>Competitive Chapter</b> चुनें और क्विज़ शुरू करें।</p>
+            </div>
 
-        <!-- Initial Placeholder Message -->
-        <div class="container" id="welcome-msg">
-            <h2 style="color: #1e3c72; text-align: center;">👋 Welcome to Math Hub!</h2>
-            <p class="placeholder-text">कृपया बायीं तरफ से कोई भी <b>Class</b> या <b>Competitive Chapter</b> चुनें और क्विज़ शुरू करें।</p>
-        </div>
-
-        <!-- Score Card -->
-        <div class="container score-card" id="score-card">
-            <h2>क्विज़ समाप्त! 🎉</h2>
-            <p id="final-score" style="font-size: 18px; margin: 15px 0;"></p>
-            <button class="next-btn" style="display: block;" onclick="restartCategory()">दोबारा खेलें 🔄</button>
+            <!-- Score Card -->
+            <div class="container score-card" id="score-card">
+                <h2>क्विज़ समाप्त! 🎉</h2>
+                <p id="final-score" style="font-size: 18px; margin: 15px 0;"></p>
+                <button class="next-btn" style="display: block;" onclick="restartCategory()">दोबारा खेलें 🔄</button>
+            </div>
         </div>
     </div>
+
 
 <script>
     const allQuizData = {
