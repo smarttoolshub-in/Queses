@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Math Quiz & Learning Hub</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: #ffffff;
+            color: #333;
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #1e3c72;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .quiz-box {
+            margin-bottom: 20px;
+        }
+        .level-badge {
+            display: inline-block;
+            background: #ff9800;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .question {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #222;
+        }
+        .options button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: #f1f3f5;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+        .options button:hover:not(:disabled) {
+            background: #e2e6ea;
+            border-color: #1e3c72;
+        }
+        .options button.correct {
+            background: #d4edda !important;
+            border-color: #28a745 !important;
+            color: #155724;
+        }
+        .options button.wrong {
+            background: #f8d7da !important;
+            border-color: #dc3545 !important;
+            color: #721c24;
+        }
+        #explanation-box {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #e9ecef;
+            display: none;
+            font-size: 14px;
+            border-left: 5px solid #1e3c72;
+        }
+        #explanation-box.correct-bg {
+            background: #d4edda;
+            border-left-color: #28a745;
+            color: #155724;
+        }
+        #explanation-box.wrong-bg {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+            color: #721c24;
+        }
+        .next-btn {
+            display: none;
+            width: 100%;
+            padding: 12px;
+            background: #1e3c72;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .next-btn:hover {
+            background: #162b50;
+        }
+        .score-card {
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🧠 Ultimate Math Hub</h1>
+    <div class="subtitle">Class 1 से Competitive Exams तक का सफर</div>
+
+    <div id="quiz-container" class="quiz-box">
+        <div id="level-badge" class="level-badge">Level 1: Basic</div>
+        <div id="question" class="question">सवाल यहाँ लोड हो रहा है...</div>
+        <div class="options" id="options-box"></div>
+        <div id="explanation-box"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">अगला सवाल ➡️</button>
+    </div>
+
+    <div id="score-card" class="score-card">
+        <h2>क्विज़ समाप्त! 🎉</h2>
+        <p id="final-score" style="font-size: 18px; margin: 20px 0;"></p>
+        <button class="next-btn" style="display: block;" onclick="restartQuiz()">दोबारा खेलें 🔄</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        {
+            level: "Class 2 (Basic Math)",
+            q: "यदि एक टोकरी में 15 आम हैं और 7 आम और डाल दिए जाएं, तो कुल कितने आम होंगे?",
+            options: ["20", "22", "25", "18"],
+            answer: 1,
+            fact: "फैक्ट: यह साधारण जोड़ (Addition) का सवाल है। 15 + 7 = 22 होता है। बुनियादी गणित मजबूत करने के लिए जोड़ सबसे पहला कदम है!"
+        },
+        {
+            level: "Class 6 (LCM & HCF)",
+            q: "संख्याओं 12 और 18 का लघुत्तम समापवर्त्य (LCM) क्या होगा?",
+            options: ["24", "36", "72", "6"],
+            answer: 1,
+            fact: "फैक्ट: 12 के गुणज (12, 24, 36...) और 18 के गुणज (18, 36...) हैं। दोनों में सबसे छोटा साझा गुणज 36 है। कॉम्पिटिशन एग्जाम्स में इसे प्राइम फैक्टराइजेशन से सेकंडों में निकाला जाता है।"
+        },
+        {
+            level: "Class 8 (Ratio & Proportion)",
+            q: "यदि A : B = 2 : 3 और B : C = 4 : 5 है, तो A : C का मान क्या होगा?",
+            options: ["8 : 15", "2 : 5", "8 : 12", "6 : 15"],
+            answer: 0,
+            fact: "फैक्ट: इसे निकालने के लिए B की वैल्यू को बराबर किया जाता है। A/B = 2/3 और B/C = 4/5, गुणा करने पर (2×4) : (3×5) यानी 8 : 15 आता है। यह अनुपात (Ratio) का बहुत प्रसिद्ध कॉम्पिटिशन पैटर्न है।"
+        },
+        {
+            level: "Class 10 (Percentages & Profit)",
+            q: "एक वस्तु को ₹500 में बेचकर 25% का लाभ कमाया गया, तो वस्तु का क्रय मूल्य (Cost Price) क्या था?",
+            options: ["₹400", "₹450", "₹375", "₹425"],
+            answer: 0,
+            fact: "फैक्ट: क्रय मूल्य = (विक्रय मूल्य × 100) / (100 + लाभ%) -> (500 × 100) / 125 = ₹400। प्रतियोगी परीक्षाओं में लाभ-हानि के सवालों को इस शॉर्टकट फॉर्मूले से चुटकियों में हल किया जाता है।"
+        },
+        {
+            level: "Class 12 / Competitive (Algebra)",
+            q: "यदि x + (1/x) = 3 है, तो x² + (1/x²) का मान क्या होगा?",
+            options: ["7", "9", "6", "11"],
+            answer: 0,
+            fact: "फैक्ट: शॉर्टकट ट्रिक! यदि x + (1/x) = k हो, तो x² + (1/x²) का मान हमेशा (k² - 2) होता है। यहाँ k = 3 है, इसलिए (3² - 2) = 9 - 2 = 7। यह अलजेब्रा (Algebra) का SSC/Banking का पसंदीदा सवाल है!"
+        }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    const levelBadge = document.getElementById("level-badge");
+    const questionEl = document.getElementById("question");
+    const optionsBox = document.getElementById("options-box");
+    const explanationBox = document.getElementById("explanation-box");
+    const nextBtn = document.getElementById("next-btn");
+    const quizContainer = document.getElementById("quiz-container");
+    const scoreCard = document.getElementById("score-card");
+    const finalScore = document.getElementById("final-score");
+
+    function loadQuestion() {
+        explanationBox.style.display = "none";
+        nextBtn.style.display = "none";
+        
+        const currentQuiz = quizData[currentQuestion];
+        levelBadge.innerText = currentQuiz.level;
+        questionEl.innerText = `Q${currentQuestion + 1}. ${currentQuiz.q}`;
+        
+        optionsBox.innerHTML = "";
+        currentQuiz.options.forEach((option, index) => {
+            const btn = document.createElement("button");
+            btn.innerText = option;
+            btn.onclick = () => selectOption(index, btn);
+            optionsBox.appendChild(btn);
+        });
+    }
+
+    function selectOption(selectedIndex, selectedBtn) {
+        const currentQuiz = quizData[currentQuestion];
+        const buttons = optionsBox.getElementsByTagName("button");
+
+        // Disable all buttons after selection
+        for (let btn of buttons) {
+            btn.disabled = true;
+        }
+
+        if (selectedIndex === currentQuiz.answer) {
+            selectedBtn.classList.add("correct");
+            score++;
+            explanationBox.className = "correct-bg";
+            explanationBox.innerHTML = `<strong>बिल्कुल सही! 🎯</strong><br>${currentQuiz.fact}`;
+        } else {
+            selectedBtn.classList.add("wrong");
+            buttons[currentQuiz.answer].classList.add("correct"); // सही जवाब दिखाओ
+            explanationBox.className = "wrong-bg";
+            explanationBox.innerHTML = `<strong>गलत जवाब! ❌</strong><br>${currentQuiz.fact}`;
+        }
+
+        explanationBox.style.display = "block";
+        nextBtn.style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestion++;
+        if (currentQuestion < quizData.length) {
+            loadQuestion();
+        } else {
+            quizContainer.style.display = "none";
+            scoreCard.style.display = "block";
+            finalScore.innerText = `आपने ${quizData.length} में से ${score} सवालों के सही जवाब दिए हैं!`;
+        }
+    }
+
+    function restartQuiz() {
+        currentQuestion = 0;
+        score = 0;
+        scoreCard.style.display = "none";
+        quizContainer.style.display = "block";
+        loadQuestion();
+    }
+
+    // Load first question on start
+    loadQuestion();
+</script>
+
+</body>
+</html>
