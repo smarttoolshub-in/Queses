@@ -203,6 +203,22 @@
     </style>
 </head>
 <body>
+            body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f7f6;
+            color: #333;
+            display: flex;
+            flex-direction: column; /* यह हेडर को सबसे ऊपर रखेगा */
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* नया कंटेनर जो साइडबार और क्विज़ को एक साथ सेट रखेगा */
+        .app-container {
+            display: flex;
+            flex-grow: 1;
+            height: calc(100vh - 50px);
+        }
         <!-- Top Header Bar -->
     <header style="background: #1e3c72; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
         <h2 style="font-size: 18px; margin: 0;">📚 Ultimate Math Hub</h2>
