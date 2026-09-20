@@ -28,14 +28,30 @@
         h1 {
             text-align: center;
             color: #1e3c72;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             font-size: 24px;
         }
         .subtitle {
             text-align: center;
             color: #666;
             font-size: 14px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #444;
+        }
+        .timer {
+            background: #ff4757;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 13px;
         }
         .quiz-box {
             margin-bottom: 20px;
@@ -129,8 +145,13 @@
     <h1>🧠 Ultimate Math Hub</h1>
     <div class="subtitle">Class 1 से Competitive Exams तक का सफर</div>
 
+    <div class="top-bar">
+        <span id="progress-text">सवाल: 1 / 5</span>
+        <span class="timer" id="timer">⏱️ 15s</span>
+    </div>
+
     <div id="quiz-container" class="quiz-box">
-        <div id="level-badge" class="level-badge">Level 1: Basic</div>
+        <div id="level-badge" class="level-badge">Level 1</div>
         <div id="question" class="question">सवाल यहाँ लोड हो रहा है...</div>
         <div class="options" id="options-box"></div>
         <div id="explanation-box"></div>
@@ -139,7 +160,8 @@
 
     <div id="score-card" class="score-card">
         <h2>क्विज़ समाप्त! 🎉</h2>
-        <p id="final-score" style="font-size: 18px; margin: 20px 0;"></p>
+        <p id="final-score" style="font-size: 18px; margin: 15px 0;"></p>
+        <p id="high-score" style="font-size: 15px; color: #e67e22; font-weight: bold;"></p>
         <button class="next-btn" style="display: block;" onclick="restartQuiz()">दोबारा खेलें 🔄</button>
     </div>
 </div>
@@ -176,7 +198,7 @@
         },
         {
             level: "Class 12 / Competitive (Algebra)",
-            q: "यदि x + (1/x) = 3 है, तो x² + (1/x²) का मान क्या होगा?",
+            q: "यदि x + (1/x) = 3 है, से x² + (1/x²) का मान क्या होगा?",
             options: ["7", "9", "6", "11"],
             answer: 0,
             fact: "फैक्ट: शॉर्टकट ट्रिक! यदि x + (1/x) = k हो, तो x² + (1/x²) का मान हमेशा (k² - 2) होता है। यहाँ k = 3 है, इसलिए (3² - 2) = 9 - 2 = 7। यह अलजेब्रा (Algebra) का SSC/Banking का पसंदीदा सवाल है!"
@@ -185,6 +207,8 @@
 
     let currentQuestion = 0;
     let score = 0;
+    let timeLeft = 15;
+    let timerInterval;
 
     const levelBadge = document.getElementById("level-badge");
     const questionEl = document.getElementById("question");
@@ -194,11 +218,48 @@
     const quizContainer = document.getElementById("quiz-container");
     const scoreCard = document.getElementById("score-card");
     const finalScore = document.getElementById("final-score");
+    const highScoreText = document.getElementById("high-score");
+    const progressText = document.getElementById("progress-text");
+    const timerEl = document.getElementById("timer");
+
+    function startTimer() {
+        timeLeft = 15;
+        timerEl.innerText = `⏱️ ${timeLeft}s`;
+        clearInterval(timerInterval);
+        
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            timerEl.innerText = `⏱️ ${timeLeft}s`;
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                timeOutAction();
+            }
+        }, 1000);
+    }
+
+    function timeOutAction() {
+        const currentQuiz = quizData[currentQuestion];
+        const buttons = optionsBox.getElementsByTagName("button");
+
+        for (let btn of buttons) {
+            btn.disabled = true;
+        }
+
+        buttons[currentQuiz.answer].classList.add("correct");
+        explanationBox.className = "wrong-bg";
+        explanationBox.innerHTML = `<strong>समय समाप्त! ⌛</strong><br>${currentQuiz.fact}`;
+        explanationBox.style.display = "block";
+        nextBtn.style.display = "block";
+    }
 
     function loadQuestion() {
+        clearInterval(timerInterval);
+        startTimer();
+        
         explanationBox.style.display = "none";
         nextBtn.style.display = "none";
         
+        progressText.innerText = `सवाल: ${currentQuestion + 1} / ${quizData.length}`;
         const currentQuiz = quizData[currentQuestion];
         levelBadge.innerText = currentQuiz.level;
         questionEl.innerText = `Q${currentQuestion + 1}. ${currentQuiz.q}`;
@@ -213,10 +274,10 @@
     }
 
     function selectOption(selectedIndex, selectedBtn) {
+        clearInterval(timerInterval);
         const currentQuiz = quizData[currentQuestion];
         const buttons = optionsBox.getElementsByTagName("button");
 
-        // Disable all buttons after selection
         for (let btn of buttons) {
             btn.disabled = true;
         }
@@ -228,7 +289,7 @@
             explanationBox.innerHTML = `<strong>बिल्कुल सही! 🎯</strong><br>${currentQuiz.fact}`;
         } else {
             selectedBtn.classList.add("wrong");
-            buttons[currentQuiz.answer].classList.add("correct"); // सही जवाब दिखाओ
+            buttons[currentQuiz.answer].classList.add("correct");
             explanationBox.className = "wrong-bg";
             explanationBox.innerHTML = `<strong>गलत जवाब! ❌</strong><br>${currentQuiz.fact}`;
         }
@@ -242,9 +303,21 @@
         if (currentQuestion < quizData.length) {
             loadQuestion();
         } else {
+            clearInterval(timerInterval);
             quizContainer.style.display = "none";
             scoreCard.style.display = "block";
+            
             finalScore.innerText = `आपने ${quizData.length} में से ${score} सवालों के सही जवाब दिए हैं!`;
+
+            // High Score Handling
+            let highScore = localStorage.getItem("math_quiz_highscore") || 0;
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem("math_quiz_highscore", highScore);
+                highScoreText.innerText = `🏆 नया हाई स्कोर (New High Score): ${highScore}!`;
+            } else {
+                highScoreText.innerText = `🏆 आपका हाई स्कोर (High Score): ${highScore}`;
+            }
         }
     }
 
@@ -256,7 +329,6 @@
         loadQuestion();
     }
 
-    // Load first question on start
     loadQuestion();
 </script>
 
