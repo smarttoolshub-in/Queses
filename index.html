@@ -1671,7 +1671,7 @@
     let currentQuestions = [];
     let currentQuestionIndex = 0;
     let score = 0;
-    let timeLeft = 15;
+    let timeLeft = 30;
     let timerInterval;
 
     const sidebar = document.getElementById("sidebar");
@@ -1723,7 +1723,7 @@
     }
 
     function startTimer() {
-        timeLeft = 15;
+        timeLeft = 30;
         document.getElementById("timer").innerText = `⏱️ ${timeLeft}s`;
         clearInterval(timerInterval);
         
